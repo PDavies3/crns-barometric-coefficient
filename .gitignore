@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.egg-info/
+# Raw input data (~550 MB)
+data/raw/
+# Generated
+outputs/
