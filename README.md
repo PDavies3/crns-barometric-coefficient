@@ -52,9 +52,9 @@ scripts/
   plot_solstice.py
   plot_petzenkirchen_sensitivity.py
   plot_regressions.py
-data/raw/          all input data, gzip-compressed (not tracked in git)
-tests/             unit tests (analytical model vs. original code, synthetic Method A)
-outputs/           results (not tracked in git)
+data/raw/          all input data, gzip-compressed
+tests/             unit tests (analytical model, synthetic Method A)
+outputs/           results
 ```
 
 ## Outputs
@@ -74,21 +74,16 @@ outputs/           results (not tracked in git)
 
 ## Data
 
-Everything the calculations read is in `data/raw/`, copied from
-`/media/pdavies/T7 Shield/PhD_work/Manuscript/Roland_Manuscript_2`.
+All input data are in `data/raw/`.
 
-- `cosmos_europe/`: raw and processed station CSVs, station metadata
-  (from `COSMOS_Europe_Data/`).
-- `cosmos_us/`: `COSMOS_<ID>.mat` files, site sheet, coordinates
-  (from `US_barometric_coeff/data/` and `lonlat.csv`).
-- `jung/`: Jungfraujoch NM (`RCORR_E`) for the CRNS incoming correction
-  (from `US_barometric_coeff/Current_analysis/`).
+- `cosmos_europe/`: raw and processed station CSVs, station metadata.
+- `cosmos_us/`: `COSMOS_<ID>.mat` files, site sheet, coordinates.
+- `jung/`: Jungfraujoch NM (`RCORR_E`) for the CRNS incoming correction.
 - `nmdb/`: NMDB hourly counts and pressure (1951–2030 decades), reference median,
-  station table (from `Paul_Schattan/data/nmdb/` and `Paul_Schattan/*.csv`).
+  station table.
 - `petzenkirchen/`: COSMOS-US 087 hourly record for the Petzenkirchen sensitivity
-  analysis (from `Sensitivity_analysis/PEC001.csv`).
-- `cutoff_rigidity/`: cut-off rigidity grid for the map contours
-  (from `US_barometric_coeff/Online/`).
+  analysis.
+- `cutoff_rigidity/`: cut-off rigidity grid for the map contours.
 
 The files are gzip-compressed (about 550 MB instead of 2.6 GB) and are read directly in
 that form. Stations whose files are missing or unreadable are skipped (EU: SCC003; US:
@@ -96,24 +91,27 @@ that form. Stations whose files are missing or unreadable are skipped (EU: SCC00
 
 ## Settings
 
-Behaviour of the original notebooks, kept on purpose. Each item can be changed in
-`config.py`.
+Each item can be changed in `config.py`.
 
 - β acceptance bounds (per g cm⁻²): EU 0.0056–0.0087, US 0.0066–0.0080, NM 0.005–0.010.
 - Minimum days per month: CRNS 15, NM 18.
 - Minimum valid months: EU 4; US 3 (and more than 50 days).
 - US: ln-ratio clipped to ±0.2.
 - NM analytical value: **median** of the monthly values (CRNS: mean).
-- `APPLY_US_PERIOD_REMOVAL`: off. The notebooks pass the station ID as a string, so the
-  manual exclusion periods in `remove_some_time_stamps` were never applied.
-- `LEGACY_PCT_CHANGE_PAD`: NaNs are padded before `pct_change` (pandas < 3 behaviour).
+- `APPLY_US_PERIOD_REMOVAL`: off. When on, the manual exclusion periods in
+  `io.remove_us_periods` are removed from the US records.
+- `LEGACY_PCT_CHANGE_PAD`: NaNs are padded before `pct_change`.
 - `NMSettings.legacy_stale_regression`: a month with fewer than 18 days reuses r/slope
   from the previous regression (including the previous station's pooled fit).
 - `NMSettings.legacy_depth_as_pressure`: NM pressure is converted to g cm⁻² before the
   McJannet correction and the analytical model, which both expect hPa.
 
 Neutron monitors with a cut-off rigidity of 0 GV are dropped, because the analytical
-model is undefined there (the original code failed and skipped them).
+model is undefined there.
 
 The reported "%hPa" values are slopes per g cm⁻² × 100, as in the paper. Per hPa they
 would be 10/9.8 ≈ 1.02 × larger.
+
+## Author
+
+Patrick Davies ([@PDavies3](https://github.com/PDavies3))
